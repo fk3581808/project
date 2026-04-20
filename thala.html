@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diodes Presentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. THEME & VARIABLES (Clean Light Theme) */
+        :root {
+            --bg-page: #f8fafc;        
+            --bg-slide: #ffffff;       
+            --primary-color: #1e40af;  
+            --secondary-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.15); 
+            --text-main: #1e293b;      
+            --text-light: #475569;     
+            --border-color: #e2e8f0;   
+            --bg-tile: #f1f5f9;        
+            
+            --color-blue: #2563eb;
+            --color-orange: #ea580c;
+            --color-purple: #9333ea;
+            --color-red: #dc2626;
+            --color-yellow: #d97706;
+            --color-cyan: #0891b2;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        @keyframes scrollGrid {
+            0% { background-position: 0px 0px; }
+            100% { background-position: -40px -40px; } 
+        }
+
+        body {
+            background-color: var(--bg-page);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            padding: 50px 20px;
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-main);
+        }
+
+        /* 2. SLIDE CONTAINER */
+        .slide {
+            background-color: var(--bg-slide);
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: scrollGrid 15s linear infinite; 
+            
+            width: 1280px;
+            height: 720px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); 
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 50px 60px;
+        }
+
+        @keyframes floatTopRight {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-30px, 30px) scale(1.1); }
+            66% { transform: translate(20px, -20px) scale(0.9); }
+        }
+
+        @keyframes floatBottomLeft {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -30px) scale(0.9); }
+            66% { transform: translate(-20px, 40px) scale(1.1); }
+        }
+
+        .slide::before, .slide::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .slide::before {
+            top: -150px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            animation: floatTopRight 15s ease-in-out infinite;
+        }
+
+        .slide::after {
+            bottom: -200px;
+            left: -150px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.08) 0%, transparent 60%);
+            animation: floatBottomLeft 18s ease-in-out infinite reverse;
+        }
+
+        .slide:nth-child(even)::before { background: radial-gradient(circle, rgba(8, 145, 178, 0.08) 0%, transparent 70%); animation-duration: 20s; }
+        .slide:nth-child(3n)::after { background: radial-gradient(circle, rgba(234, 88, 12, 0.08) 0%, transparent 60%); animation-duration: 12s; }
+        .slide:nth-child(odd)::before { animation-direction: reverse; }
+
+        /* --- WATERMARK & NUMBERING --- */
+        .watermark {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            font-size: 18px;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-family: 'Fira Code', monospace;
+            opacity: 0.4; 
+            z-index: 2;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 16px;
+            color: var(--text-light);
+            font-weight: 600;
+            font-family: 'Fira Code', monospace;
+            z-index: 2;
+            opacity: 0.6;
+        }
+
+        .slide-content-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* 3. TYPOGRAPHY */
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+        }
+
+        h1 {
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .slide-header {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slide-header::before {
+            content: '>';
+            font-family: 'Fira Code', monospace;
+            color: var(--secondary-color);
+            font-size: 36px;
+            opacity: 0.8;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        h3 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        p, li, td, th {
+            font-size: 21px;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+        
+        p { margin-bottom: 15px; }
+
+        .subtitle {
+            font-size: 28px;
+            color: var(--text-light);
+            font-weight: 500;
+            margin-bottom: 20px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* 4. LAYOUTS */
+        .layout-title { text-align: center; justify-content: center; align-items: center; height: 100%; }
+        .layout-title h1 { font-size: 85px; }
+        .layout-title .accent-bar {
+            width: 150px;
+            height: 6px;
+            background-color: var(--secondary-color);
+            margin: 0 auto 30px auto;
+            border-radius: 3px;
+        }
+
+        .layout-split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; flex-grow: 1; align-items: stretch; }
+        .layout-split.center-align { align-items: center; }
+
+        .layout-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; flex-grow: 1; align-items: stretch; }
+        
+        /* Interactive Cards */
+        .card {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 35px 35px;
+            border-top: 4px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 0 15px rgba(59, 130, 246, 0.1);
+            border-color: var(--secondary-color);
+            background-color: #ffffff;
+        }
+
+        .card .icon {
+            font-size: 46px; 
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        .card:hover .icon { transform: scale(1.1); }
+
+        .icon.blue { color: var(--color-blue); text-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+        .icon.orange { color: var(--color-orange); text-shadow: 0 4px 10px rgba(234, 88, 12, 0.2); }
+        .icon.purple { color: var(--color-purple); text-shadow: 0 4px 10px rgba(147, 51, 234, 0.2); }
+        .icon.red { color: var(--color-red); text-shadow: 0 4px 10px rgba(220, 38, 38, 0.2); }
+        .icon.yellow { color: var(--color-yellow); text-shadow: 0 4px 10px rgba(217, 119, 6, 0.2); }
+        .icon.cyan { color: var(--color-cyan); text-shadow: 0 4px 10px rgba(8, 145, 178, 0.2); }
+        .icon.green { color: var(--secondary-color); text-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
+
+        .card.top-blue { border-top-color: var(--color-blue); }
+        .card.top-orange { border-top-color: var(--color-orange); }
+        .card.top-purple { border-top-color: var(--color-purple); }
+        .card.top-red { border-top-color: var(--color-red); }
+        .card.top-yellow { border-top-color: var(--color-yellow); }
+        .card.top-cyan { border-top-color: var(--color-cyan); }
+        .card.top-green { border-top-color: var(--secondary-color); }
+
+        /* Lists */
+        ul { list-style: none; padding-left: 0; }
+        ul li { position: relative; padding-left: 30px; margin-bottom: 15px; }
+        ul li::before {
+            content: '>'; 
+            font-family: 'Fira Code', monospace;
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 4px;
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+
+        .feature-list li {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 20px 20px 20px 60px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+        }
+        .feature-list li:hover {
+            border-color: var(--secondary-color);
+            background-color: #ffffff;
+        }
+        .feature-list li::before {
+            top: 22px; left: 20px; color: var(--color-blue); font-size: 20px; font-weight: 900; font-family: "Font Awesome 6 Free"; content: '\f00c'; 
+        }
+        .feature-list li strong { color: var(--primary-color); }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.08), transparent);
+            border-left: 5px solid var(--secondary-color); padding: 20px 25px;
+            border-radius: 0 8px 8px 0; margin-bottom: 30px;
+            border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        .highlight-box p { margin-bottom: 0; color: var(--primary-color); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+
+        /* --- IMAGE BOX CONFIGURATION & UNIQUE ANIMATIONS --- */
+        .image-box {
+            width: 100%;
+            height: 420px; 
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover; 
+            width: 100%;
+            height: 100%;
+            opacity: 0.95;
+        }
+
+        .img-scanline::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 10px;
+            background: rgba(59, 130, 246, 0.3); box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            animation: scanline 3s linear infinite; pointer-events: none;
+        }
+        @keyframes scanline {
+            0% { top: -10px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; }
+        }
+
+        .img-glitch::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(59, 130, 246, 0.05); mix-blend-mode: overlay;
+            animation: glitchEffect 4s infinite steps(1); pointer-events: none;
+        }
+        @keyframes glitchEffect {
+            0%, 100% { opacity: 0; transform: translateX(0); }
+            5% { opacity: 1; transform: translateX(-5px); background: rgba(59, 130, 246, 0.1); }
+            10% { opacity: 1; transform: translateX(5px); background: rgba(8, 145, 178, 0.1); }
+            15% { opacity: 0; transform: translateX(0); }
+        }
+
+        .img-radar::after {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(59, 130, 246, 0.15) 100%);
+            transform-origin: center; animation: radarSpin 4s linear infinite;
+            pointer-events: none; border-radius: 50%; margin-top: -100%; margin-left: -100%;
+        }
+        @keyframes radarSpin { 100% { transform: rotate(360deg); } }
+
+        .img-matrix::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 200%;
+            background: repeating-linear-gradient(180deg, transparent 0, transparent 20px, rgba(59, 130, 246, 0.1) 21px, transparent 22px);
+            animation: matrixRain 3s linear infinite; pointer-events: none;
+        }
+        @keyframes matrixRain { 0% { transform: translateY(-50%); } 100% { transform: translateY(0); } }
+
+        .img-pulse {
+            animation: pulseBorder 2s infinite alternate;
+        }
+        @keyframes pulseBorder {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.05); border-color: var(--border-color); }
+            100% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.2), inset 0 0 15px rgba(59, 130, 246, 0.1); border-color: var(--secondary-color); }
+        }
+
+        /* --- INTERACTIVE ANIMATION CONTAINER (Shared styles for Slide 8 & 12) --- */
+        .anim-container {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+            height: 480px; 
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: #f1f5f9;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.03);
+        }
+        .simulationCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+        .simulationCanvas:active {
+            cursor: grabbing;
+        }
+        .anim-info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            color: var(--text-main);
+            max-width: 330px;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .anim-info-panel h2 { margin: 0 0 10px 0; font-size: 1.3rem; color: var(--color-blue); transition: color 0.3s; font-family: 'Montserrat', sans-serif;}
+        .anim-info-panel p { margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--text-light); }
+        
+        .anim-status-text {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            pointer-events: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .anim-instruction-toast {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-blue);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            animation: toastPulse 2s infinite;
+        }
+
+        @keyframes toastPulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        .anim-reset-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            z-index: 10;
+            font-family: 'Open Sans', sans-serif;
+        }
+        .anim-reset-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+        }
+        .anim-reset-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Slide 1: Title & Introduction -->
+<div class="slide">
+    <div class="slide-content-wrapper layout-title">
+        <div class="accent-bar"></div>
+        <h1>Diodes <i class="fa-solid fa-microchip" style="color: var(--color-blue); font-size: 55px;"></i></h1>
+        <p class="subtitle">[ Basics of PN Junction and Zener Diode ]</p>
+        <div style="margin-top: 50px; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); border: 1px solid var(--border-color); padding: 30px 50px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+            <h3 style="color: var(--text-light); font-size: 26px; margin-bottom: 10px;">Presented By</h3>
+            <p style="color: var(--primary-color); font-size: 36px; font-weight: 700; margin-bottom: 5px;">MD Farhan</p>
+            <p style="color: var(--secondary-color); font-size: 24px; font-family: 'Fira Code', monospace;">Roll No: 602</p>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 1</div>
+</div>
+
+<!-- Slide 2: What is a Diode? -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">What is a Diode? <i class="fa-solid fa-circle-question" style="color: var(--color-blue); font-size: 32px; margin-left: 10px;"></i></h2>
+        <div class="layout-split center-align">
+            <div>
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-arrow-right-to-line" style="color: var(--secondary-color);"></i> A diode is an electronic part that acts as a one-way street for electricity.</p>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Main Job:</strong> It lets electrical current flow easily in one direction, but strongly blocks it from going backwards.</li>
+                    <li><strong>Easy Example:</strong> Think of a water pipe valve. Water can only flow through it one way.</li>
+                    <li><strong>Terminals:</strong> It has an Anode (Positive) and a Cathode (Negative).</li>
+                </ul>
+            </div>
+            <div class="image-box img-pulse"> 
+                <img src="https://images.unsplash.com/photo-1592504886617-e85d4bf4b8c9?q=80&w=2000&auto=format&fit=crop" alt="Real circuit board electronics">
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 2</div>
+</div>
+
+<!-- Slide 3: Types of Diodes -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Types of Diodes <i class="fa-solid fa-layer-group" style="color: var(--color-orange); font-size: 32px; margin-left: 10px;"></i></h2>
+        <p style="text-align: center; margin-bottom: 40px;">There are many types of diodes, but we will focus on the two most important ones:</p>
+        <div class="layout-grid-2">
+            <div class="card top-blue">
+                <div class="icon blue"><i class="fa-solid fa-bolt"></i></div>
+                <h3>1. PN Junction Diode</h3>
+                <ul>
+                    <li>The most basic and common type.</li>
+                    <li>Used for general purposes like turning AC power into DC power.</li>
+                    <li>Only meant to work in the forward (ON) direction.</li>
+                </ul>
+            </div>
+            <div class="card top-orange">
+                <div class="icon orange"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>2. Zener Diode</h3>
+                <ul>
+                    <li>A highly special type of diode.</li>
+                    <li>Designed to safely work in the reverse (backwards) direction.</li>
+                    <li>Used to keep voltage perfectly steady and protect circuits.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 3</div>
+</div>
+
+<!-- Slide 4: What is a PN Junction Diode? -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">What is a PN Diode? <i class="fa-solid fa-puzzle-piece" style="color: var(--color-cyan); font-size: 32px; margin-left: 10px;"></i></h2>
+        <div class="layout-split center-align">
+            <div>
+                <ul class="feature-list">
+                    <li><strong>Basic Type:</strong> It is the simplest and most common diode used in all electronics today.</li>
+                    <li><strong>How it's made:</strong> It is made by joining two different semiconductor materials together (P-type and N-type).</li>
+                    <li><strong>The Junction:</strong> The exact boundary line where these two materials touch is called the PN Junction.</li>
+                </ul>
+            </div>
+            <div class="image-box img-glitch"> 
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop" alt="Real microchip macro">
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 4</div>
+</div>
+
+<!-- Slide 5: Semiconductor Basics (The P and N Types) -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Semiconductor Basics <i class="fa-solid fa-atom" style="color: var(--color-purple); font-size: 32px; margin-left: 10px;"></i></h2>
+        <p>To understand the diode, we must look at its two pieces:</p>
+        <div class="layout-grid-2">
+            <div class="card top-blue">
+                <div class="icon blue"><i class="fa-solid fa-circle-plus"></i></div>
+                <h3>P-Type Material</h3>
+                <ul>
+                    <li>Main charge carriers: <strong>Holes</strong> (Positive charge).</li>
+                    <li>Acts as the positive (+) side of the diode.</li>
+                    <li>It has a shortage of electrons and wants more.</li>
+                </ul>
+            </div>
+            <div class="card top-orange">
+                <div class="icon orange"><i class="fa-solid fa-circle-minus"></i></div>
+                <h3>N-Type Material</h3>
+                <ul>
+                    <li>Main charge carriers: <strong>Electrons</strong> (Negative charge).</li>
+                    <li>Acts as the negative (-) side of the diode.</li>
+                    <li>It has extra free electrons ready to move.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 5</div>
+</div>
+
+<!-- Slide 6: Forward Bias -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Forward Bias: The "ON" Switch <i class="fa-solid fa-toggle-on" style="color: var(--secondary-color); font-size: 36px; margin-left: 10px;"></i></h2>
+        <div class="layout-split center-align">
+            <div>
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-check-circle" style="color: var(--secondary-color);"></i> Current flows easily. It acts like a closed switch or a wire.</p>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Connection:</strong> The battery's positive (+) side connects to the P-type, and negative (-) side to the N-type.</li>
+                    <li><strong>Wall Shrinks:</strong> The battery pushes electrons and holes tightly toward the center wall, making the barrier very weak.</li>
+                    <li><strong>Current Flows:</strong> A large current flows through easily once the tiny barrier voltage (0.7V) is overcome.</li>
+                </ul>
+            </div>
+            <div class="image-box img-radar"> 
+                <img src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?q=80&w=2070&auto=format&fit=crop" alt="Real breadboard testing electronics">
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 6</div>
+</div>
+
+<!-- Slide 7: Reverse Bias -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Reverse Bias: The "OFF" Switch <i class="fa-solid fa-toggle-off" style="color: var(--color-red); font-size: 36px; margin-left: 10px;"></i></h2>
+        <div class="layout-split center-align">
+            <div>
+                <div class="highlight-box">
+                    <p style="border-left-color: var(--color-red); color: var(--color-red);"><i class="fa-solid fa-ban" style="color: var(--color-red);"></i> Current is blocked. It acts like an open, broken switch.</p>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Connection:</strong> The battery's negative (-) connects to the P-type, and positive (+) connects to the N-type.</li>
+                    <li><strong>Wall Grows:</strong> The battery pulls charges away from the center. The empty middle zone gets very wide and strong.</li>
+                    <li><strong>No Current:</strong> It completely blocks the main power from flowing. Normal diodes will break if you push too hard!</li>
+                </ul>
+            </div>
+            <div class="image-box img-scanline"> 
+                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop" alt="Real multimeter testing blocked circuit">
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 7</div>
+</div>
+
+<!-- Slide 8: Interactive PN Junction Animation -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Interactive PN Junction <i class="fa-solid fa-gamepad" style="color: var(--color-blue); font-size: 32px; margin-left: 10px;"></i></h2>
+        <div class="anim-container" id="anim-container-pn">
+            <canvas class="simulationCanvas" id="simulationCanvas-pn"></canvas>
+            <div class="anim-info-panel" id="animInfoPanel-pn">
+                <h2 id="animInfoTitle-pn">Interactive Mode</h2>
+                <p id="animInfoDesc-pn">Drag the ends of the Red (P-type) and Blue (N-type) wires to the battery terminals to complete the circuit and set the bias.</p>
+            </div>
+            <div class="anim-instruction-toast" id="anim-instruction-toast-pn">Drag the wires to connect the battery!</div>
+            <div class="anim-status-text" id="anim-status-text-pn">UNBIASED (0V)</div>
+            <button class="anim-reset-btn" id="anim-reset-btn-pn">Reset Connections</button>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 8</div>
+</div>
+
+<!-- Slide 9: What is a Zener Diode? (How it's made) -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">What is a Zener Diode? <i class="fa-solid fa-bolt-lightning" style="color: var(--color-yellow); font-size: 32px; margin-left: 10px;"></i></h2>
+        <div class="layout-split center-align">
+            <div>
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-shield-cat" style="color: var(--color-yellow);"></i> A special diode built to handle backward power safely!</p>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>How it's made:</strong> It is made by <strong>heavily doping</strong> (adding more impurities to) the silicon during manufacturing.</li>
+                    <li><strong>The Result:</strong> This heavy doping makes the depletion region (the invisible wall) very thin and incredibly strong.</li>
+                    <li><strong>The Purpose:</strong> Normal diodes burn out if pushed backwards too hard. Zeners are designed to survive this to control voltage.</li>
+                </ul>
+            </div>
+            <div class="image-box img-matrix"> 
+                <img src="https://images.unsplash.com/photo-1562408590-e32931084e23?q=80&w=2070&auto=format&fit=crop" alt="Real close up macro of an electronics component">
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 9</div>
+</div>
+
+<!-- Slide 10: Zener Forward Bias -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Zener: Forward Bias <i class="fa-solid fa-arrow-right-long" style="color: var(--secondary-color); font-size: 32px; margin-left: 10px;"></i></h2>
+        <div class="layout-split center-align">
+            <div>
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-equals" style="color: var(--secondary-color);"></i> In the forward direction, it acts exactly like a normal PN Diode!</p>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Connection:</strong> The battery's positive (+) connects to P-type, and negative (-) connects to N-type.</li>
+                    <li><strong>Action:</strong> Current flows easily once the standard 0.7V barrier is crossed.</li>
+                    <li><strong>Usage:</strong> We rarely use Zener diodes in this mode, because regular PN diodes already do this perfectly and are cheaper.</li>
+                </ul>
+            </div>
+            <div class="image-box img-pulse">
+                <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?q=80&w=2069&auto=format&fit=crop" alt="Real person working on electronic circuit">
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 10</div>
+</div>
+
+<!-- Slide 11: Zener Reverse Bias -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Zener: Reverse Bias <i class="fa-solid fa-shield-halved" style="color: var(--color-red); font-size: 32px; margin-left: 10px;"></i></h2>
+        <div class="layout-split center-align">
+            <div>
+                <div class="highlight-box">
+                    <p style="border-left-color: var(--color-red); color: var(--color-red);"><i class="fa-solid fa-lock" style="color: var(--color-red);"></i> The real magic! It safely controls power flowing backwards.</p>
+                </div>
+                <ul class="feature-list">
+                    <li><strong>Connection:</strong> The battery's negative (-) connects to P-type, and positive (+) connects to N-type.</li>
+                    <li><strong>The Block:</strong> At first, it blocks the current normally just like any other diode.</li>
+                    <li><strong>The Breakdown:</strong> Once the battery hits a specific high voltage (called "Zener Voltage"), the gate opens! Current flows backwards safely, keeping the voltage perfectly steady.</li>
+                </ul>
+            </div>
+            <div class="image-box img-radar">
+                <img src="https://images.unsplash.com/photo-1581092335397-9583eb92d232?q=80&w=2070&auto=format&fit=crop" alt="Real testing equipment in lab">
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 11</div>
+</div>
+
+<!-- Slide 12: Interactive Zener Diode Animation -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Interactive Zener Diode <i class="fa-solid fa-gamepad" style="color: var(--color-orange); font-size: 32px; margin-left: 10px;"></i></h2>
+        <div class="anim-container" id="anim-container-zener">
+            <canvas class="simulationCanvas" id="simulationCanvas-zener"></canvas>
+            <div class="anim-info-panel" id="animInfoPanel-zener">
+                <h2 id="animInfoTitle-zener">Zener Diode Mode</h2>
+                <p id="animInfoDesc-zener">Drag the Red (P-type) and Blue (N-type) wires to a battery. Zener diodes are heavily doped, enabling safe breakdown at Vz = 10V.</p>
+            </div>
+            <div class="anim-instruction-toast" id="anim-instruction-toast-zener" style="background: var(--color-orange); box-shadow: 0 4px 15px rgba(234, 88, 12, 0.4);">Drag wires to test Zener Breakdown!</div>
+            <div class="anim-status-text" id="anim-status-text-zener">UNBIASED (0V)</div>
+            <button class="anim-reset-btn" id="anim-reset-btn-zener">Reset Connections</button>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 12</div>
+</div>
+
+<!-- Slide 13: Real Life Applications -->
+<div class="slide">
+    <div class="slide-content-wrapper">
+        <h2 class="slide-header">Real-Life Applications <i class="fa-solid fa-earth-americas" style="color: var(--color-blue); font-size: 32px; margin-left: 10px;"></i></h2>
+        <div class="layout-grid-2">
+            <div class="card top-cyan">
+                <div class="icon cyan"><i class="fa-solid fa-plug"></i></div>
+                <h3>PN Diode: Rectifiers</h3>
+                <ul>
+                    <li>Because they only allow one-way flow, PN diodes change wall power (AC) into steady battery power (DC).</li>
+                    <li><strong>Example:</strong> Used inside every mobile phone charger and laptop power brick.</li>
+                </ul>
+            </div>
+            <div class="card top-yellow">
+                <div class="icon yellow"><i class="fa-solid fa-car-battery"></i></div>
+                <h3>Zener Diode: Regulators</h3>
+                <ul>
+                    <li>Zener diodes keep the output voltage perfectly steady, even if the input power is jumping up and down.</li>
+                    <li><strong>Example:</strong> Used to protect sensitive computer chips from high voltage spikes.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 13</div>
+</div>
+
+<!-- Slide 14: Thank You -->
+<div class="slide">
+    <div class="slide-content-wrapper layout-title" style="flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+        <h1 style="font-size: 85px; margin-bottom: 20px; color: var(--primary-color);">Thank You</h1>
+        <p style="font-size: 36px; color: var(--text-light); font-weight: 500;">For your attention and time.</p>
+    </div>
+    <div class="watermark">Government Polytechnic Patna 7</div>
+    <div class="slide-number">Slide 14</div>
+</div>
+
+<!-- Scripts for the Animations -->
+<script>
+// Use window.addEventListener('load', ...) to guarantee all CSS layout 
+// calculations (height, width) are fully resolved before drawing the canvases.
+
+function initPNAnimation() {
+    const canvas = document.getElementById('simulationCanvas-pn');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('anim-container-pn');
+    
+    const infoTitle = document.getElementById('animInfoTitle-pn');
+    const infoDesc = document.getElementById('animInfoDesc-pn');
+    const statusText = document.getElementById('anim-status-text-pn');
+    const resetBtn = document.getElementById('anim-reset-btn-pn');
+
+    let state = 'unbiased'; 
+    let width, height, cx, cy;
+    let animationFrameId;
+
+    const diodeW = 450;
+    const diodeH = 140;
+    let targetDepletionW = 60;
+    let currentDepletionW = 60;
+
+    const colors = {
+        pRegionStart: '#fecaca', pRegionEnd: '#ef4444',
+        nRegionStart: '#bfdbfe', nRegionEnd: '#3b82f6',
+        depletionStart: '#f8fafc', depletionEnd: '#cbd5e1',
+        hole: '#dc2626', electron: '#2563eb', 
+        wire: '#94a3b8', wireGlow: '#60a5fa',
+        bulbOff: '#cbd5e1', bulbOn: '#fbbf24', bulbGlow: 'rgba(251, 191, 36, 0.5)',
+        text: '#1e293b'
+    };
+
+    let batPlus = { x: 0, y: 0, radius: 30 };
+    let batMinus = { x: 0, y: 0, radius: 30 };
+    
+    let pWire = { start: {x:0, y:0}, end: {x:0, y:0}, color: '#f87171', terminal: null, type: 'p' };
+    let nWire = { start: {x:0, y:0}, end: {x:0, y:0}, color: '#60a5fa', terminal: null, type: 'n' };
+    
+    let draggingWire = null;
+    let particles = [];
+    let wireElectrons = [];
+    const numParticles = 120; 
+
+    function resize() {
+        if(!container) return;
+        width = canvas.width = container.clientWidth;
+        height = canvas.height = container.clientHeight;
+        cx = width / 2;
+        cy = height / 3 + 10; 
+
+        const batY = height - 90;
+        batPlus = { x: cx - 80, y: batY - 20, radius: 30 };
+        batMinus = { x: cx + 80, y: batY - 20, radius: 30 };
+
+        pWire.start = { x: cx - diodeW/2 - 20, y: cy }; 
+        nWire.start = { x: cx + diodeW/2 + 80, y: cy }; 
+
+        if (!pWire.terminal) pWire.end = { x: cx - 250, y: cy + 150 };
+        else snapToTerminal(pWire);
+        
+        if (!nWire.terminal) nWire.end = { x: cx + 250, y: cy + 150 };
+        else snapToTerminal(nWire);
+
+        if (particles.length === 0) initParticles();
+    }
+    
+    window.addEventListener('resize', resize);
+
+    resetBtn.onclick = function() {
+        pWire.terminal = null;
+        nWire.terminal = null;
+        state = 'unbiased';
+        pWire.end = { x: cx - 250, y: cy + 150 };
+        nWire.end = { x: cx + 250, y: cy + 150 };
+        updateBiasUI();
+    };
+
+    function getEventPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX = e.clientX, clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function dist(p1, p2) { return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)); }
+
+    function handleStart(e) {
+        const pos = getEventPos(e);
+        if (dist(pos, pWire.end) < 40) {
+            e.preventDefault();
+            draggingWire = pWire;
+            pWire.terminal = null;
+            updateBiasLogic();
+        } else if (dist(pos, nWire.end) < 40) {
+            e.preventDefault();
+            draggingWire = nWire;
+            nWire.terminal = null;
+            updateBiasLogic();
+        }
+    }
+
+    function handleMove(e) {
+        if (!draggingWire) return;
+        e.preventDefault();
+        draggingWire.end = getEventPos(e);
+    }
+
+    function handleEnd(e) {
+        if (!draggingWire) return;
+        e.preventDefault();
+        if (dist(draggingWire.end, batPlus) < 50) {
+            draggingWire.terminal = 'plus';
+            snapToTerminal(draggingWire);
+        } else if (dist(draggingWire.end, batMinus) < 50) {
+            draggingWire.terminal = 'minus';
+            snapToTerminal(draggingWire);
+        }
+        draggingWire = null;
+        updateBiasLogic();
+    }
+
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd); 
+    canvas.addEventListener('touchstart', handleStart, {passive: false});
+    canvas.addEventListener('touchmove', handleMove, {passive: false});
+    window.addEventListener('touchend', handleEnd);
+
+    function snapToTerminal(wire) {
+        if (wire.terminal === 'plus') wire.end = { x: batPlus.x, y: batPlus.y - 5 }; 
+        else if (wire.terminal === 'minus') wire.end = { x: batMinus.x, y: batMinus.y - 5 };
+    }
+
+    function updateBiasLogic() {
+        if (pWire.terminal === 'plus' && nWire.terminal === 'minus') state = 'forward';
+        else if (pWire.terminal === 'minus' && nWire.terminal === 'plus') state = 'reverse';
+        else state = 'unbiased';
+        updateBiasUI();
+    }
+
+    function updateBiasUI() {
+        if(state === 'unbiased') {
+            targetDepletionW = 60;
+            infoTitle.innerText = "Interactive Mode";
+            infoTitle.style.color = "var(--color-blue)";
+            infoDesc.innerText = pWire.terminal || nWire.terminal ? "Circuit incomplete! Connect both wires to the battery to set a bias." : "Drag the ends of the Red (P-type) and Blue (N-type) wires to the battery terminals to complete the circuit.";
+            statusText.innerText = "UNBIASED (0V)";
+            statusText.style.color = "var(--text-light)";
+        } 
+        else if(state === 'forward') {
+            targetDepletionW = 10;
+            infoTitle.innerText = "Forward Bias";
+            infoTitle.style.color = "var(--secondary-color)";
+            infoDesc.innerText = "Correct! P-type is connected to Positive (+), N-type to Negative (-). The depletion region narrows, allowing current to flow freely and light the bulb.";
+            statusText.innerText = "FORWARD BIAS";
+            statusText.style.color = "var(--secondary-color)";
+        } 
+        else if(state === 'reverse') {
+            targetDepletionW = 160;
+            infoTitle.innerText = "Reverse Bias";
+            infoTitle.style.color = "var(--color-red)";
+            infoDesc.innerText = "Reversed! P-type is connected to Negative (-), N-type to Positive (+). The depletion region widens, acting as an insulator. No current flows.";
+            statusText.innerText = "REVERSE BIAS";
+            statusText.style.color = "var(--color-red)";
+        }
+    }
+
+    class Particle {
+        constructor(type, x, y) {
+            this.type = type;
+            this.x = x; this.y = y;
+            this.baseX = x; this.baseY = y;
+            this.radius = 6;
+            this.randomOffset = Math.random() * Math.PI * 2;
+            this.speed = 0.5 + Math.random() * 0.5;
+        }
+        update(time) {
+            this.y += Math.sin(time * 0.005 + this.randomOffset) * 0.2; 
+            const diodeLeft = cx - diodeW / 2;
+            const diodeRight = cx + diodeW / 2;
+
+            if (state === 'unbiased') {
+                this.x += (this.baseX - this.x) * 0.05; 
+            } else if (state === 'forward') {
+                if (this.type === 'hole') {
+                    this.x += 2 * this.speed;
+                    if (this.x > diodeRight) this.x = diodeLeft;
+                } else {
+                    this.x -= 2 * this.speed;
+                    if (this.x < diodeLeft) this.x = diodeRight;
+                }
+            } else if (state === 'reverse') {
+                if (this.type === 'hole') {
+                    if (this.x > diodeLeft + 20) this.x -= 1 * this.speed;
+                } else {
+                    if (this.x < diodeRight - 20) this.x += 1 * this.speed;
+                }
+            }
+        }
+        draw(ctx) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.type === 'hole' ? colors.hole : colors.electron;
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.font = '10px Arial';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(this.type === 'hole' ? '+' : '-', this.x, this.y + 1);
+        }
+    }
+
+    function getBezierXY(t, p0, p1, p2, p3) {
+        const u = 1 - t, tt = t * t, uu = u * u, uuu = uu * u, ttt = tt * t;
+        return {
+            x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
+            y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y
+        };
+    }
+
+    class WireElectron {
+        constructor(wireType, offset) {
+            this.wireType = wireType; 
+            this.offset = offset; 
+        }
+        draw(ctx, time) {
+            if (state !== 'forward') return;
+            let t = (time * 0.0005 + this.offset) % 1;
+            let pos;
+            
+            if (this.wireType === 'n') {
+                let p0 = nWire.end, p3 = nWire.start;
+                let p1 = {x: p0.x, y: p0.y - 100}, p2 = {x: p3.x, y: p3.y + 100};
+                pos = getBezierXY(t, p0, p1, p2, p3);
+            } else {
+                let p0 = pWire.start, p3 = pWire.end;
+                let p1 = {x: p0.x, y: p0.y + 100}, p2 = {x: p3.x, y: p3.y - 100};
+                pos = getBezierXY(t, p0, p1, p2, p3);
+            }
+
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = colors.wireGlow;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = colors.wireGlow;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        wireElectrons = [];
+        const diodeLeft = cx - diodeW / 2;
+        const diodeTop = cy - diodeH / 2;
+        
+        for (let i = 0; i < numParticles / 2; i++) {
+            let px = diodeLeft + 30 + Math.random() * (diodeW / 2 - 80);
+            let py = diodeTop + 20 + Math.random() * (diodeH - 40);
+            particles.push(new Particle('hole', px, py));
+        }
+        for (let i = 0; i < numParticles / 2; i++) {
+            let px = cx + 50 + Math.random() * (diodeW / 2 - 80);
+            let py = diodeTop + 20 + Math.random() * (diodeH - 40);
+            particles.push(new Particle('electron', px, py));
+        }
+        for(let i=0; i<20; i++) {
+            wireElectrons.push(new WireElectron('n', i/20));
+            wireElectrons.push(new WireElectron('p', i/20));
+        }
+    }
+
+    function drawDiode() {
+        const diodeLeft = cx - diodeW / 2;
+        const diodeTop = cy - diodeH / 2;
+        
+        currentDepletionW += (targetDepletionW - currentDepletionW) * 0.05;
+        
+        const pGrad = ctx.createLinearGradient(diodeLeft, 0, cx, 0);
+        pGrad.addColorStop(0, colors.pRegionStart); pGrad.addColorStop(1, colors.pRegionEnd);
+        ctx.fillStyle = pGrad;
+        ctx.fillRect(diodeLeft, diodeTop, diodeW/2 - currentDepletionW/2, diodeH);
+        
+        const nGrad = ctx.createLinearGradient(cx, 0, cx + diodeW/2, 0);
+        nGrad.addColorStop(0, colors.nRegionStart); nGrad.addColorStop(1, colors.nRegionEnd);
+        ctx.fillStyle = nGrad;
+        ctx.fillRect(cx + currentDepletionW/2, diodeTop, diodeW/2 - currentDepletionW/2, diodeH);
+        
+        const depGrad = ctx.createLinearGradient(0, diodeTop, 0, diodeTop + diodeH);
+        depGrad.addColorStop(0, colors.depletionStart); depGrad.addColorStop(1, colors.depletionEnd);
+        ctx.fillStyle = depGrad;
+        ctx.fillRect(cx - currentDepletionW/2, diodeTop, currentDepletionW, diodeH);
+
+        drawIons(diodeTop, diodeH, currentDepletionW);
+
+        const glassGrad = ctx.createLinearGradient(0, diodeTop, 0, diodeTop + diodeH);
+        glassGrad.addColorStop(0, 'rgba(255,255,255,0.6)');
+        glassGrad.addColorStop(0.2, 'rgba(255,255,255,0.2)');
+        glassGrad.addColorStop(0.8, 'rgba(0,0,0,0.05)');
+        glassGrad.addColorStop(1, 'rgba(0,0,0,0.15)');
+        ctx.fillStyle = glassGrad;
+        ctx.fillRect(diodeLeft, diodeTop, diodeW, diodeH);
+
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+        ctx.strokeRect(diodeLeft, diodeTop, diodeW, diodeH);
+
+        const capW = 20;
+        const capGrad = ctx.createLinearGradient(0, diodeTop, 0, diodeTop + diodeH);
+        capGrad.addColorStop(0, '#94a3b8'); capGrad.addColorStop(0.5, '#f8fafc'); capGrad.addColorStop(1, '#475569');
+        ctx.fillStyle = capGrad;
+        if (ctx.roundRect) {
+            ctx.beginPath(); ctx.roundRect(diodeLeft - capW, diodeTop + 20, capW, diodeH - 40, [5, 0, 0, 5]); ctx.fill();
+            ctx.beginPath(); ctx.roundRect(cx + diodeW/2, diodeTop + 20, capW, diodeH - 40, [0, 5, 5, 0]); ctx.fill();
+        } else {
+            ctx.fillRect(diodeLeft - capW, diodeTop + 20, capW, diodeH - 40);
+            ctx.fillRect(cx + diodeW/2, diodeTop + 20, capW, diodeH - 40);
+        }
+
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = 'bold 80px "Segoe UI", Arial';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('P', cx - diodeW/4, cy);
+        ctx.fillText('N', cx + diodeW/4, cy);
+    }
+
+    function drawIons(top, height, depWidth) {
+        if (depWidth < 20) return;
+        ctx.font = '12px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        const rows = 4;
+        const spacingY = height / (rows + 1);
+        
+        for(let i=1; i<=rows; i++) {
+            const y = top + i * spacingY;
+            ctx.beginPath(); ctx.arc(cx - depWidth/4, y, 8, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.3)'; ctx.fill();
+            ctx.fillStyle = colors.hole; ctx.fillText('-', cx - depWidth/4, y+1);
+            
+            ctx.beginPath(); ctx.arc(cx + depWidth/4, y, 8, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(37, 99, 235, 0.3)'; ctx.fill();
+            ctx.fillStyle = colors.electron; ctx.fillText('+', cx + depWidth/4, y+1);
+        }
+    }
+
+    function drawBulb() {
+        const bulbX = cx + diodeW/2 + 80;
+        const bulbY = cy;
+        const isGlowing = state === 'forward';
+
+        ctx.beginPath();
+        ctx.moveTo(cx + diodeW/2 + 20, cy);
+        ctx.lineTo(bulbX - 30, cy);
+        ctx.strokeStyle = colors.wire; ctx.lineWidth = 4; ctx.stroke();
+        
+        if (isGlowing) {
+            const gradient = ctx.createRadialGradient(bulbX, bulbY - 20, 10, bulbX, bulbY - 20, 80);
+            gradient.addColorStop(0, colors.bulbGlow);
+            gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient;
+            ctx.beginPath(); ctx.arc(bulbX, bulbY - 20, 80, 0, Math.PI * 2); ctx.fill();
+        }
+
+        ctx.beginPath(); ctx.arc(bulbX, bulbY - 20, 30, 0, Math.PI * 2);
+        ctx.fillStyle = isGlowing ? colors.bulbOn : colors.bulbOff; ctx.fill();
+        
+        ctx.beginPath(); ctx.arc(bulbX - 10, bulbY - 30, 8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill();
+
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; 
+        ctx.beginPath(); ctx.arc(bulbX, bulbY - 20, 30, 0, Math.PI * 2); ctx.stroke();
+
+        ctx.beginPath(); ctx.moveTo(bulbX - 10, bulbY + 10);
+        ctx.lineTo(bulbX - 6, bulbY - 20); ctx.lineTo(bulbX + 6, bulbY - 20);
+        ctx.lineTo(bulbX + 10, bulbY + 10);
+        ctx.strokeStyle = isGlowing ? '#fff' : '#64748b'; ctx.lineWidth = 2; ctx.stroke();
+
+        const baseGrad = ctx.createLinearGradient(bulbX - 15, 0, bulbX + 15, 0);
+        baseGrad.addColorStop(0, '#94a3b8'); baseGrad.addColorStop(0.5, '#f1f5f9'); baseGrad.addColorStop(1, '#64748b');
+        ctx.fillStyle = baseGrad; 
+        ctx.fillRect(bulbX - 15, bulbY + 10, 30, 16);
+        ctx.fillStyle = '#475569'; ctx.fillRect(bulbX - 8, bulbY + 26, 16, 8);
+    }
+
+    function drawBattery() {
+        const batWidth = 200, batHeight = 120;
+        const bx = cx - batWidth/2, by = batPlus.y + 20;
+
+        ctx.shadowBlur = 15; ctx.shadowColor = 'rgba(0,0,0,0.15)';
+        const bodyGrad = ctx.createLinearGradient(bx, by, bx + batWidth, by);
+        bodyGrad.addColorStop(0, '#e2e8f0'); bodyGrad.addColorStop(0.5, '#f8fafc'); bodyGrad.addColorStop(1, '#cbd5e1');
+        ctx.fillStyle = bodyGrad;
+        if (ctx.roundRect) {
+            ctx.beginPath(); ctx.roundRect(bx, by, batWidth, batHeight, 8); ctx.fill();
+        } else {
+            ctx.fillRect(bx, by, batWidth, batHeight);
+        }
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillRect(bx + 10, by + 10, batWidth - 20, batHeight - 20);
+
+        ctx.fillStyle = '#ef4444'; 
+        if (ctx.roundRect) {
+            ctx.beginPath(); ctx.roundRect(bx + 10, by + 10, (batWidth - 20)/2, batHeight - 20, [4, 0, 0, 4]); ctx.fill();
+        } else {
+            ctx.fillRect(bx + 10, by + 10, (batWidth - 20)/2, batHeight - 20);
+        }
+        ctx.fillStyle = '#3b82f6'; 
+        if (ctx.roundRect) {
+            ctx.beginPath(); ctx.roundRect(cx, by + 10, (batWidth - 20)/2, batHeight - 20, [0, 4, 4, 0]); ctx.fill();
+        } else {
+            ctx.fillRect(cx, by + 10, (batWidth - 20)/2, batHeight - 20);
+        }
+
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 18px "Segoe UI"'; ctx.textAlign = 'center';
+        ctx.fillText('12V BATTERY', cx, by + batHeight/2);
+        
+        ctx.font = 'bold 35px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillText('+', bx + 40, by + batHeight/2 + 10);
+        ctx.fillText('-', bx + batWidth - 40, by + batHeight/2 + 10);
+
+        const drawTerminal = (x, yTop, color) => {
+            const termGrad = ctx.createLinearGradient(x - 14, 0, x + 14, 0);
+            termGrad.addColorStop(0, '#94a3b8'); termGrad.addColorStop(0.3, '#f1f5f9'); termGrad.addColorStop(1, '#64748b');
+            ctx.fillStyle = termGrad;
+            if (ctx.roundRect) {
+                ctx.beginPath(); ctx.roundRect(x - 14, yTop, 28, 20, [3, 3, 0, 0]); ctx.fill();
+            } else {
+                ctx.fillRect(x - 14, yTop, 28, 20);
+            }
+            
+            ctx.fillStyle = color;
+            ctx.fillRect(x - 14, yTop + 14, 28, 4);
+        };
+
+        drawTerminal(batPlus.x, batPlus.y, '#dc2626');
+        drawTerminal(batMinus.x, batMinus.y, '#2563eb');
+    }
+
+    function drawDynamicWires() {
+        ctx.lineWidth = 5; 
+        ctx.lineCap = 'round';
+        const curveDrop = 150; 
+
+        ctx.beginPath();
+        ctx.moveTo(pWire.start.x, pWire.start.y);
+        ctx.bezierCurveTo(pWire.start.x, pWire.start.y + curveDrop, pWire.end.x, pWire.end.y - curveDrop, pWire.end.x, pWire.end.y);
+        ctx.strokeStyle = pWire.color;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(nWire.start.x, nWire.start.y);
+        ctx.bezierCurveTo(nWire.start.x, nWire.start.y + curveDrop, nWire.end.x, nWire.end.y - curveDrop, nWire.end.x, nWire.end.y);
+        ctx.strokeStyle = nWire.color;
+        ctx.stroke();
+
+        const drawPlug = (wire) => {
+            ctx.beginPath();
+            ctx.arc(wire.end.x, wire.end.y, 12, 0, Math.PI*2);
+            ctx.fillStyle = wire === draggingWire ? '#f1f5f9' : '#e2e8f0';
+            ctx.fill();
+            
+            ctx.beginPath(); ctx.arc(wire.end.x, wire.end.y, 5, 0, Math.PI*2);
+            ctx.fillStyle = '#475569'; ctx.fill();
+
+            ctx.strokeStyle = wire.color; ctx.lineWidth = 3; ctx.stroke();
+            
+            if (state === 'forward' || state === 'reverse') {
+                if (wire.terminal) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = wire.color;
+                    ctx.strokeStyle = '#1e293b';
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                }
+            }
+        };
+
+        drawPlug(pWire);
+        drawPlug(nWire);
+    }
+
+    function animate(time) {
+        if(!container) return;
+        ctx.clearRect(0, 0, width, height);
+        
+        drawBattery();
+        drawBulb();
+        drawDynamicWires();
+        drawDiode();
+        
+        particles.forEach(p => { p.update(time); p.draw(ctx); });
+        wireElectrons.forEach(we => we.draw(ctx, time));
+
+        animationFrameId = requestAnimationFrame(animate);
+    }
+
+    resize();
+    requestAnimationFrame(animate);
+}
+
+function initZenerAnimation() {
+    const canvas = document.getElementById('simulationCanvas-zener');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('anim-container-zener');
+    
+    const infoTitle = document.getElementById('animInfoTitle-zener');
+    const infoDesc = document.getElementById('animInfoDesc-zener');
+    const statusText = document.getElementById('anim-status-text-zener');
+    const resetBtn = document.getElementById('anim-reset-btn-zener');
+
+    let state = 'unbiased'; 
+    let width, height, cx, cy;
+    let animationFrameId;
+
+    const diodeW = 450;
+    const diodeH = 140;
+    let targetDepletionW = 35; // Thinner default due to heavy doping
+    let currentDepletionW = 35;
+
+    const colors = {
+        pRegionStart: '#fecaca', pRegionEnd: '#ef4444',
+        nRegionStart: '#bfdbfe', nRegionEnd: '#3b82f6',
+        depletionStart: '#f8fafc', depletionEnd: '#cbd5e1',
+        hole: '#dc2626', electron: '#2563eb', 
+        wire: '#94a3b8', wireGlow: '#60a5fa',
+        bulbOff: '#cbd5e1', bulbOn: '#fbbf24', bulbGlow: 'rgba(251, 191, 36, 0.5)',
+        text: '#1e293b',
+        zenerGlow: 'rgba(168, 85, 247, 0.8)' // Purple for breakdown
+    };
+
+    let bat15Plus = { x: 0, y: 0, radius: 30 };
+    let bat15Minus = { x: 0, y: 0, radius: 30 };
+    let bat5Plus = { x: 0, y: 0, radius: 30 };
+    let bat5Minus = { x: 0, y: 0, radius: 30 };
+    let connectedBattery = null;
+    
+    let pWire = { start: {x:0, y:0}, end: {x:0, y:0}, color: '#f87171', terminal: null, type: 'p' };
+    let nWire = { start: {x:0, y:0}, end: {x:0, y:0}, color: '#60a5fa', terminal: null, type: 'n' };
+    
+    let draggingWire = null;
+    let particles = [];
+    let wireElectrons = [];
+    
+    const numParticles = 200; 
+
+    function resize() {
+        if(!container) return;
+        width = canvas.width = container.clientWidth;
+        height = canvas.height = container.clientHeight;
+        cx = width / 2;
+        cy = height / 3 + 10; 
+
+        const batY = height - 90;
+        
+        // 5V Battery (Left)
+        const b5cx = cx - 180;
+        bat5Plus = { x: b5cx - 50, y: batY - 20, radius: 30, id: '5V-plus' };
+        bat5Minus = { x: b5cx + 50, y: batY - 20, radius: 30, id: '5V-minus' };
+
+        // 15V Battery (Right)
+        const b15cx = cx + 180;
+        bat15Plus = { x: b15cx - 50, y: batY - 20, radius: 30, id: '15V-plus' };
+        bat15Minus = { x: b15cx + 50, y: batY - 20, radius: 30, id: '15V-minus' };
+
+        pWire.start = { x: cx - diodeW/2 - 20, y: cy }; 
+        nWire.start = { x: cx + diodeW/2 + 80, y: cy }; 
+
+        if (!pWire.terminal) pWire.end = { x: cx - 250, y: cy + 150 };
+        else snapToTerminal(pWire, pWire.terminal);
+        
+        if (!nWire.terminal) nWire.end = { x: cx + 250, y: cy + 150 };
+        else snapToTerminal(nWire, nWire.terminal);
+
+        if (particles.length === 0) initParticles();
+    }
+    window.addEventListener('resize', resize);
+
+    resetBtn.onclick = function() {
+        pWire.terminal = null;
+        nWire.terminal = null;
+        state = 'unbiased';
+        pWire.end = { x: cx - 250, y: cy + 150 };
+        nWire.end = { x: cx + 250, y: cy + 150 };
+        updateBiasUI();
+    }
+
+    function getEventPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX = e.clientX, clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function dist(p1, p2) { return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)); }
+
+    function handleStart(e) {
+        const pos = getEventPos(e);
+        if (dist(pos, pWire.end) < 40) {
+            e.preventDefault();
+            draggingWire = pWire;
+            pWire.terminal = null;
+            updateBiasLogic();
+        } else if (dist(pos, nWire.end) < 40) {
+            e.preventDefault();
+            draggingWire = nWire;
+            nWire.terminal = null;
+            updateBiasLogic();
+        }
+    }
+
+    function handleMove(e) {
+        if (!draggingWire) return;
+        e.preventDefault();
+        draggingWire.end = getEventPos(e);
+    }
+
+    function handleEnd(e) {
+        if (!draggingWire) return;
+        e.preventDefault();
+        
+        const terminals = [bat5Plus, bat5Minus, bat15Plus, bat15Minus];
+        let snapped = false;
+        
+        for (let term of terminals) {
+            if (dist(draggingWire.end, term) < 50) {
+                draggingWire.terminal = term.id;
+                snapToTerminal(draggingWire, term.id);
+                snapped = true;
+                break;
+            }
+        }
+        
+        if (!snapped) draggingWire.terminal = null;
+        
+        draggingWire = null;
+        updateBiasLogic();
+    }
+
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd); 
+    canvas.addEventListener('touchstart', handleStart, {passive: false});
+    canvas.addEventListener('touchmove', handleMove, {passive: false});
+    window.addEventListener('touchend', handleEnd);
+
+    function snapToTerminal(wire, terminalId) {
+        const terminals = {
+            '5V-plus': bat5Plus, '5V-minus': bat5Minus,
+            '15V-plus': bat15Plus, '15V-minus': bat15Minus
+        };
+        if (terminals[terminalId]) {
+            wire.end = { x: terminals[terminalId].x, y: terminals[terminalId].y - 5 };
+        }
+    }
+
+    function updateBiasLogic() {
+        let pTerm = pWire.terminal;
+        let nTerm = nWire.terminal;
+        connectedBattery = null;
+
+        if (pTerm && nTerm) {
+            if (pTerm.startsWith('15V') && nTerm.startsWith('15V')) {
+                connectedBattery = '15V';
+                state = (pTerm === '15V-plus') ? 'forward' : 'reverse';
+            } else if (pTerm.startsWith('5V') && nTerm.startsWith('5V')) {
+                connectedBattery = '5V';
+                state = (pTerm === '5V-plus') ? 'forward' : 'reverse';
+            } else {
+                state = 'unbiased'; // Cross-connected
+            }
+        } else {
+            state = 'unbiased';
+        }
+        updateBiasUI();
+    }
+
+    function updateBiasUI() {
+        if(state === 'unbiased') {
+            targetDepletionW = 35;
+            infoTitle.innerText = "Interactive Zener Mode";
+            infoTitle.style.color = "var(--color-orange)";
+            if (pWire.terminal && nWire.terminal && pWire.terminal.split('-')[0] !== nWire.terminal.split('-')[0]) {
+                infoDesc.innerText = "Cross-connected! Connect both wires to the SAME battery.";
+            } else {
+                infoDesc.innerText = pWire.terminal || nWire.terminal ? "Circuit incomplete! Connect both wires to set a bias." : "Drag the Red (P) and Blue (N) wires to a battery. The Zener voltage (Vz) is 10V.";
+            }
+            statusText.innerText = "UNBIASED (0V)";
+            statusText.style.color = "var(--text-light)";
+        } 
+        else if(state === 'forward') {
+            targetDepletionW = 10;
+            infoTitle.innerText = "Forward Bias";
+            infoTitle.style.color = "var(--secondary-color)";
+            infoDesc.innerText = `Connected to ${connectedBattery}. P to Positive (+), N to Negative (-). The depletion region narrows. Current flows normally and lights the bulb.`;
+            statusText.innerText = `FORWARD BIAS (${connectedBattery})`;
+            statusText.style.color = "var(--secondary-color)";
+        } 
+        else if(state === 'reverse') {
+            if (connectedBattery === '15V') {
+                targetDepletionW = 40; 
+                infoTitle.innerText = "ZENER BREAKDOWN!";
+                infoTitle.style.color = "var(--color-purple)"; 
+                infoDesc.innerText = "Reversed at 15V! The voltage exceeds the Zener Voltage (Vz = 10V). Electrons tunnel through the junction, causing a massive reverse current!";
+                statusText.innerText = "ZENER BREAKDOWN (-15V)";
+                statusText.style.color = "var(--color-purple)";
+            } else {
+                targetDepletionW = 100; // Widens, blocking current
+                infoTitle.innerText = "Reverse Bias (Blocked)";
+                infoTitle.style.color = "var(--color-red)"; 
+                infoDesc.innerText = "Reversed at 5V. Since 5V is LESS than the Zener Voltage (Vz = 10V), the diode blocks current like a normal diode. The depletion region widens.";
+                statusText.innerText = "REVERSE BIAS (-5V)";
+                statusText.style.color = "var(--color-red)";
+            }
+        }
+    }
+
+    class Particle {
+        constructor(type, x, y) {
+            this.type = type;
+            this.x = x; this.y = y;
+            this.baseX = x; this.baseY = y;
+            this.radius = 6;
+            this.randomOffset = Math.random() * Math.PI * 2;
+            this.speed = 0.5 + Math.random() * 0.5;
+        }
+
+        update(time) {
+            this.y += Math.sin(time * 0.005 + this.randomOffset) * 0.2; 
+            const diodeLeft = cx - diodeW / 2;
+            const diodeRight = cx + diodeW / 2;
+
+            if (state === 'unbiased') {
+                this.x += (this.baseX - this.x) * 0.05; 
+            } 
+            else if (state === 'forward') {
+                if (this.type === 'hole') {
+                    this.x += 2 * this.speed;
+                    if (this.x > diodeRight) this.x = diodeLeft;
+                } else {
+                    this.x -= 2 * this.speed;
+                    if (this.x < diodeLeft) this.x = diodeRight;
+                }
+            } 
+            else if (state === 'reverse') {
+                if (connectedBattery === '15V') {
+                    // ZENER BREAKDOWN PHYSICS: Carriers flow in REVERSE!
+                    if (this.type === 'hole') {
+                        this.x -= 3 * this.speed; 
+                        if (this.x < diodeLeft) this.x = diodeRight;
+                    } else {
+                        this.x += 3 * this.speed; 
+                        if (this.x > diodeRight) this.x = diodeLeft;
+                    }
+                } else {
+                    // NORMAL REVERSE BIAS PHYSICS: Blocked, pushed away
+                    if (this.type === 'hole') {
+                        if (this.x > diodeLeft + 20) this.x -= 1 * this.speed;
+                    } else {
+                        if (this.x < diodeRight - 20) this.x += 1 * this.speed;
+                    }
+                }
+            }
+        }
+
+        draw(ctx) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.type === 'hole' ? colors.hole : colors.electron;
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.font = '10px Arial';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(this.type === 'hole' ? '+' : '-', this.x, this.y + 1);
+        }
+    }
+
+    function getBezierXY(t, p0, p1, p2, p3) {
+        const u = 1 - t, tt = t * t, uu = u * u, uuu = uu * u, ttt = tt * t;
+        return {
+            x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
+            y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y
+        };
+    }
+
+    class WireElectron {
+        constructor(wireType, offset) {
+            this.wireType = wireType; 
+            this.offset = offset; 
+        }
+        draw(ctx, time) {
+            if (state === 'unbiased' || (state === 'reverse' && connectedBattery === '5V')) return;
+            
+            let t = (time * 0.0005 + this.offset) % 1;
+            let pos;
+            let electronColor = colors.wireGlow; // Normal blue
+
+            if (state === 'forward') {
+                // Normal flow
+                if (this.wireType === 'n') {
+                    let p0 = nWire.end, p3 = nWire.start;
+                    let p1 = {x: p0.x, y: p0.y - 100}, p2 = {x: p3.x, y: p3.y + 100};
+                    pos = getBezierXY(t, p0, p1, p2, p3);
+                } else {
+                    let p0 = pWire.start, p3 = pWire.end;
+                    let p1 = {x: p0.x, y: p0.y + 100}, p2 = {x: p3.x, y: p3.y - 100};
+                    pos = getBezierXY(t, p0, p1, p2, p3);
+                }
+            } else if (state === 'reverse') {
+                // BREAKDOWN flow: Battery(-) -> P -> N -> Battery(+)
+                electronColor = '#d8b4fe'; // Purple glow for breakdown current
+                
+                if (this.wireType === 'p') {
+                    let p0 = pWire.end, p3 = pWire.start; 
+                    let p1 = {x: p0.x, y: p0.y - 100}, p2 = {x: p3.x, y: p3.y + 100};
+                    pos = getBezierXY(t, p0, p1, p2, p3);
+                } else {
+                    let p0 = nWire.start, p3 = nWire.end; 
+                    let p1 = {x: p0.x, y: p0.y + 100}, p2 = {x: p3.x, y: p3.y - 100};
+                    pos = getBezierXY(t, p0, p1, p2, p3);
+                }
+            }
+
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = electronColor;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = electronColor;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        wireElectrons = [];
+        const diodeLeft = cx - diodeW / 2;
+        const diodeTop = cy - diodeH / 2;
+        
+        for (let i = 0; i < numParticles / 2; i++) {
+            let px = diodeLeft + 30 + Math.random() * (diodeW / 2 - 80);
+            let py = diodeTop + 20 + Math.random() * (diodeH - 40);
+            particles.push(new Particle('hole', px, py));
+        }
+        for (let i = 0; i < numParticles / 2; i++) {
+            let px = cx + 50 + Math.random() * (diodeW / 2 - 80);
+            let py = diodeTop + 20 + Math.random() * (diodeH - 40);
+            particles.push(new Particle('electron', px, py));
+        }
+        for(let i=0; i<20; i++) {
+            wireElectrons.push(new WireElectron('n', i/20));
+            wireElectrons.push(new WireElectron('p', i/20));
+        }
+    }
+
+    function drawDiode() {
+        const diodeLeft = cx - diodeW / 2;
+        const diodeTop = cy - diodeH / 2;
+        
+        currentDepletionW += (targetDepletionW - currentDepletionW) * 0.05;
+        
+        // P-Region Gradient
+        const pGrad = ctx.createLinearGradient(diodeLeft, 0, cx, 0);
+        pGrad.addColorStop(0, colors.pRegionStart); pGrad.addColorStop(1, colors.pRegionEnd);
+        ctx.fillStyle = pGrad;
+        ctx.fillRect(diodeLeft, diodeTop, diodeW/2 - currentDepletionW/2, diodeH);
+        
+        // N-Region Gradient
+        const nGrad = ctx.createLinearGradient(cx, 0, cx + diodeW/2, 0);
+        nGrad.addColorStop(0, colors.nRegionStart); nGrad.addColorStop(1, colors.nRegionEnd);
+        ctx.fillStyle = nGrad;
+        ctx.fillRect(cx + currentDepletionW/2, diodeTop, diodeW/2 - currentDepletionW/2, diodeH);
+        
+        // Depletion Region Gradient
+        const depGrad = ctx.createLinearGradient(0, diodeTop, 0, diodeTop + diodeH);
+        depGrad.addColorStop(0, colors.depletionStart); depGrad.addColorStop(1, colors.depletionEnd);
+        ctx.fillStyle = depGrad;
+        ctx.fillRect(cx - currentDepletionW/2, diodeTop, currentDepletionW, diodeH);
+
+        // Zener Breakdown Arc/Glow inside Depletion
+        if (state === 'reverse' && connectedBattery === '15V') {
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = colors.zenerGlow;
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.3)'; // Purple tunnel effect
+            ctx.fillRect(cx - currentDepletionW/2, diodeTop + 20, currentDepletionW, diodeH - 40);
+            ctx.shadowBlur = 0;
+        }
+
+        drawIons(diodeTop, diodeH, currentDepletionW);
+
+        // ZENER SPECIFIC VISUALS: Orange Glass Tint & Cathode Band for Light Theme
+        const glassGrad = ctx.createLinearGradient(0, diodeTop, 0, diodeTop + diodeH);
+        glassGrad.addColorStop(0, 'rgba(255, 140, 0, 0.3)');   
+        glassGrad.addColorStop(0.2, 'rgba(255, 200, 100, 0.1)');
+        glassGrad.addColorStop(0.8, 'rgba(150, 40, 0, 0.2)');
+        glassGrad.addColorStop(1, 'rgba(80, 10, 0, 0.5)');
+        ctx.fillStyle = glassGrad;
+        ctx.fillRect(diodeLeft, diodeTop, diodeW, diodeH);
+
+        // Cathode Band (Black Stripe on N-side)
+        ctx.fillStyle = 'rgba(15, 15, 15, 0.85)';
+        ctx.fillRect(cx + diodeW/2 - 40, diodeTop, 25, diodeH);
+
+        // Diode Outline
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+        ctx.strokeRect(diodeLeft, diodeTop, diodeW, diodeH);
+
+        // Metallic Connectors / End Caps
+        const capW = 20;
+        const capGrad = ctx.createLinearGradient(0, diodeTop, 0, diodeTop + diodeH);
+        capGrad.addColorStop(0, '#94a3b8'); capGrad.addColorStop(0.5, '#f8fafc'); capGrad.addColorStop(1, '#475569');
+        ctx.fillStyle = capGrad;
+        if (ctx.roundRect) {
+            ctx.beginPath(); ctx.roundRect(diodeLeft - capW, diodeTop + 20, capW, diodeH - 40, [5, 0, 0, 5]); ctx.fill();
+            ctx.beginPath(); ctx.roundRect(cx + diodeW/2, diodeTop + 20, capW, diodeH - 40, [0, 5, 5, 0]); ctx.fill();
+        } else {
+            ctx.fillRect(diodeLeft - capW, diodeTop + 20, capW, diodeH - 40);
+            ctx.fillRect(cx + diodeW/2, diodeTop + 20, capW, diodeH - 40);
+        }
+
+        // Labels
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = 'bold 80px "Segoe UI", Arial';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('P', cx - diodeW/4, cy);
+        ctx.fillText('N', cx + diodeW/4, cy);
+
+        ctx.font = 'bold 20px Arial';
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillText('ZENER DIODE', cx, cy - diodeH/2 - 25);
+    }
+
+    function drawIons(top, height, depWidth) {
+        if (depWidth < 20) return;
+        ctx.font = '12px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        const rows = 4;
+        const spacingY = height / (rows + 1);
+        
+        for(let i=1; i<=rows; i++) {
+            const y = top + i * spacingY;
+            ctx.beginPath(); ctx.arc(cx - depWidth/4, y, 8, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.3)'; ctx.fill();
+            ctx.fillStyle = colors.hole; ctx.fillText('-', cx - depWidth/4, y+1);
+            
+            ctx.beginPath(); ctx.arc(cx + depWidth/4, y, 8, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.3)'; ctx.fill();
+            ctx.fillStyle = colors.electron; ctx.fillText('+', cx + depWidth/4, y+1);
+        }
+    }
+
+    function drawBulb() {
+        const bulbX = cx + diodeW/2 + 80;
+        const bulbY = cy;
+        const isGlowing = state === 'forward' || (state === 'reverse' && connectedBattery === '15V'); 
+
+        ctx.beginPath();
+        ctx.moveTo(cx + diodeW/2 + 20, cy);
+        ctx.lineTo(bulbX - 30, cy);
+        ctx.strokeStyle = colors.wire; ctx.lineWidth = 4; ctx.stroke();
+        
+        if (isGlowing) {
+            const glowColor = state === 'reverse' ? colors.zenerGlow : colors.bulbGlow;
+            const gradient = ctx.createRadialGradient(bulbX, bulbY - 20, 10, bulbX, bulbY - 20, 80);
+            gradient.addColorStop(0, glowColor);
+            gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient;
+            ctx.beginPath(); ctx.arc(bulbX, bulbY - 20, 80, 0, Math.PI * 2); ctx.fill();
+        }
+
+        ctx.beginPath(); ctx.arc(bulbX, bulbY - 20, 30, 0, Math.PI * 2);
+        ctx.fillStyle = isGlowing ? (state === 'reverse' ? '#d8b4fe' : colors.bulbOn) : colors.bulbOff; 
+        ctx.fill();
+        
+        ctx.beginPath(); ctx.arc(bulbX - 10, bulbY - 30, 8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill();
+
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; 
+        ctx.beginPath(); ctx.arc(bulbX, bulbY - 20, 30, 0, Math.PI * 2); ctx.stroke();
+
+        ctx.beginPath(); ctx.moveTo(bulbX - 10, bulbY + 10);
+        ctx.lineTo(bulbX - 6, bulbY - 20); ctx.lineTo(bulbX + 6, bulbY - 20);
+        ctx.lineTo(bulbX + 10, bulbY + 10);
+        ctx.strokeStyle = isGlowing ? '#fff' : '#64748b'; ctx.lineWidth = 2; ctx.stroke();
+
+        const baseGrad = ctx.createLinearGradient(bulbX - 15, 0, bulbX + 15, 0);
+        baseGrad.addColorStop(0, '#94a3b8'); baseGrad.addColorStop(0.5, '#f1f5f9'); baseGrad.addColorStop(1, '#64748b');
+        ctx.fillStyle = baseGrad; 
+        ctx.fillRect(bulbX - 15, bulbY + 10, 30, 16);
+        ctx.fillStyle = '#475569'; ctx.fillRect(bulbX - 8, bulbY + 26, 16, 8);
+    }
+
+    function drawSingleBattery(bCx, bCy, voltage, subText, tPlus, tMinus) {
+        const batWidth = 160, batHeight = 100;
+        const bx = bCx - batWidth/2, by = bCy + 20; 
+
+        ctx.shadowBlur = 15; ctx.shadowColor = 'rgba(0,0,0,0.15)';
+        const bodyGrad = ctx.createLinearGradient(bx, by, bx + batWidth, by);
+        bodyGrad.addColorStop(0, '#e2e8f0'); bodyGrad.addColorStop(0.5, '#f8fafc'); bodyGrad.addColorStop(1, '#cbd5e1');
+        ctx.fillStyle = bodyGrad;
+        if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(bx, by, batWidth, batHeight, 8); ctx.fill(); } 
+        else { ctx.fillRect(bx, by, batWidth, batHeight); }
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillRect(bx + 10, by + 10, batWidth - 20, batHeight - 20);
+
+        ctx.fillStyle = '#ef4444'; 
+        if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(bx + 10, by + 10, (batWidth - 20)/2, batHeight - 20, [4, 0, 0, 4]); ctx.fill(); } 
+        else { ctx.fillRect(bx + 10, by + 10, (batWidth - 20)/2, batHeight - 20); }
+        
+        ctx.fillStyle = '#3b82f6'; 
+        if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(bCx, by + 10, (batWidth - 20)/2, batHeight - 20, [0, 4, 4, 0]); ctx.fill(); } 
+        else { ctx.fillRect(bCx, by + 10, (batWidth - 20)/2, batHeight - 20); }
+
+        const gloss = ctx.createLinearGradient(0, by + 10, 0, by + batHeight/2);
+        gloss.addColorStop(0, 'rgba(255,255,255,0.8)'); gloss.addColorStop(1, 'transparent');
+        ctx.fillStyle = gloss;
+        ctx.fillRect(bx + 10, by + 10, batWidth - 20, batHeight - 20);
+
+        ctx.fillStyle = 'white'; ctx.font = 'bold 16px "Segoe UI"'; ctx.textAlign = 'center';
+        ctx.shadowBlur = 4; ctx.shadowColor = 'black';
+        ctx.fillText(voltage, bCx, by + batHeight/2 - 5);
+        ctx.font = 'bold 12px Arial'; ctx.fillStyle = '#fde047';
+        ctx.fillText(subText, bCx, by + batHeight/2 + 15);
+        ctx.shadowBlur = 0;
+        
+        ctx.font = 'bold 28px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillText('+', bx + 30, by + batHeight/2 + 10);
+        ctx.fillText('-', bx + batWidth - 30, by + batHeight/2 + 10);
+
+        const drawTerminal = (x, yTop, color) => {
+            const termGrad = ctx.createLinearGradient(x - 14, 0, x + 14, 0);
+            termGrad.addColorStop(0, '#94a3b8'); termGrad.addColorStop(0.3, '#f1f5f9'); termGrad.addColorStop(1, '#64748b');
+            ctx.fillStyle = termGrad;
+            if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x - 14, yTop, 28, 20, [3, 3, 0, 0]); ctx.fill(); } 
+            else { ctx.fillRect(x - 14, yTop, 28, 20); }
+            
+            ctx.fillStyle = color;
+            ctx.fillRect(x - 14, yTop + 14, 28, 4);
+        };
+
+        drawTerminal(tPlus.x, tPlus.y, '#dc2626');
+        drawTerminal(tMinus.x, tMinus.y, '#2563eb');
+    }
+
+    function drawBatteries() {
+        const batY = cy + 180;
+        const b5cx = cx - 160;
+        drawSingleBattery(b5cx, batY - 20, '5V NORMAL', '< Vz (10V)', bat5Plus, bat5Minus);
+        const b15cx = cx + 160;
+        drawSingleBattery(b15cx, batY - 20, '15V HIGH', '> Vz (10V)', bat15Plus, bat15Minus);
+    }
+
+    function drawDynamicWires() {
+        ctx.lineWidth = 5; 
+        ctx.lineCap = 'round';
+        const curveDrop = 150; 
+
+        ctx.beginPath();
+        ctx.moveTo(pWire.start.x, pWire.start.y);
+        ctx.bezierCurveTo(pWire.start.x, pWire.start.y + curveDrop, pWire.end.x, pWire.end.y - curveDrop, pWire.end.x, pWire.end.y);
+        ctx.strokeStyle = pWire.color;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(nWire.start.x, nWire.start.y);
+        ctx.bezierCurveTo(nWire.start.x, nWire.start.y + curveDrop, nWire.end.x, nWire.end.y - curveDrop, nWire.end.x, nWire.end.y);
+        ctx.strokeStyle = nWire.color;
+        ctx.stroke();
+
+        const drawPlug = (wire) => {
+            ctx.beginPath();
+            ctx.arc(wire.end.x, wire.end.y, 12, 0, Math.PI*2);
+            ctx.fillStyle = wire === draggingWire ? '#f1f5f9' : '#e2e8f0';
+            ctx.fill();
+            
+            ctx.beginPath(); ctx.arc(wire.end.x, wire.end.y, 5, 0, Math.PI*2);
+            ctx.fillStyle = '#475569'; ctx.fill();
+
+            ctx.strokeStyle = wire.color; ctx.lineWidth = 3; ctx.stroke();
+            
+            if (state === 'forward' || state === 'reverse') {
+                if (wire.terminal) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = state === 'reverse' ? '#a855f7' : wire.color;
+                    ctx.strokeStyle = '#1e293b';
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                }
+            }
+        };
+
+        drawPlug(pWire);
+        drawPlug(nWire);
+    }
+
+    function animate(time) {
+        if(!container) return;
+        ctx.clearRect(0, 0, width, height);
+        
+        drawBatteries();
+        drawBulb();
+        drawDynamicWires();
+        drawDiode();
+        
+        particles.forEach(p => { p.update(time); p.draw(ctx); });
+        wireElectrons.forEach(we => we.draw(ctx, time));
+
+        animationFrameId = requestAnimationFrame(animate);
+    }
+
+    resize();
+    requestAnimationFrame(animate);
+}
+
+// Ensure both animations are initialized once the window loads
+window.addEventListener('load', function() {
+    initPNAnimation();
+    initZenerAnimation();
+});
+</script>
+</body>
+</html>
